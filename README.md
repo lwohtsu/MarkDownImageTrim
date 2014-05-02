@@ -38,7 +38,7 @@ Markdownの先頭でスクリプトとCSSを読み込みます。
 
 
 #しくみ
-ファイル名の後に`?clip= x + y + width + height`という具合に、トリミングの左上座標と幅、高さを指定すると、img要素をbackground-image付きのdiv要素に置き換えます。
+ファイル名の後に`?clip=x+y+w+h`という具合に、トリミングの左上座標(x,y)と幅(w)、高さ(h)を指定すると、img要素をbackground-image付きのdiv要素に置き換えます。
 
 CSSでimg要素にｍax-widthを設定しており、その幅は超えないように縮小します。
 
