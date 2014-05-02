@@ -1,7 +1,9 @@
 $(function(){
 	$('img').each(function(){
+		//alt属性をキャプションとして画像の下に付ける
 		var t = $(this);
 		t.after('<p class="caption">▲：'+ t.attr('alt') + '</p>');
+		//src属性からファイル名を取り出し、画像の上に括弧付きで表示
 		var s = t.attr('src');
 		if(s.indexOf('?')>=0){
 			//トリミング用クラス
@@ -22,6 +24,7 @@ $(function(){
 	});
 });
 
+//クリッピング
 function imageClipping(targ, qry){
 	var param = qry.split('+');
 	var repelem = $('<div class="trimbase"></div>');
