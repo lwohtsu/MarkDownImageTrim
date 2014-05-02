@@ -27,24 +27,27 @@ $(function(){
 
 //クリッピング
 function imageClipping(targ, qry){
-	var param = qry.split('+');
-	var repelem = $('<div class="trimbase"></div>');
-	var maxwidth = parseFloat(targ.css('max-width'));
-	var contwidth = targ[0].naturalWidth;
-	var zoom = 1;
-	var piczoom = 1;
+	var param = qry.split('+');	//パラメータ分割
+	var repelem = $('<div class="trimbase"></div>');	//置き換えるdiv要素
+	var maxwidth = parseFloat(targ.css('max-width'));	//最大幅
+	var contwidth = targ[0].naturalWidth;	//実画像サイズ(webkitのみ)
+	var zoom = 1;	//パラメータの拡大率
+	var piczoom = 1;	//画像の拡大率（div要素の幅に対する倍率）
+
+	//トリミング対象の幅がmax-widthを超える？
 	if(parseFloat(param[2]) > maxwidth){
 		// console.log(contwidth);
 		// console.log(maxwidth);
 		// console.log(param[2]);
-		//トリミング対象の幅がmax-widthを超える
+		//max-width÷トリミング幅で各パラメータを調整
 		zoom = maxwidth / param[2];
-		// console.log(zoom);
-		piczoom = (contwidth*zoom) / maxwidth;
 		param[0] *= zoom;
 		param[1] *= zoom;
 		param[2] *= zoom;
 		param[3] *= zoom;
+		// console.log(zoom);
+		//画像の倍率を求める
+		piczoom = (contwidth*zoom) / maxwidth;
 	} else {
 		//トリミング対象の幅がmax-width未満
 		piczoom = contwidth / param[2];
