@@ -15,6 +15,7 @@ $(function(){
 			t.before('<p>（'+ s.substr(s.lastIndexOf('/')+1) + '）</p>');
 		}
 	});
+	//prettyprint対応のclass指定（HTMLでprettyprintを読み込んで実行してください）
 	$('code').each(function(){
 		var c = $(this).attr('class');
 		var p = $(this).parent('pre');
