@@ -1,7 +1,9 @@
 img {
 	display:block;
-	max-width:500px;
+	/*max-width:500px;*/
 	border: solid 1px #444;
+/*	-webkit-transform-origin: 0 0;
+	-webkit-transform: scale(0.5, 0.5);*/
 }
 blockquote{
 	background:#ff0;
@@ -39,6 +41,7 @@ pre{
 }
 pre code{
 	background: #FBB;	
+	width: 55em;
 }
 code.lang-t{
 	background: #BFB; max-width:30em;		

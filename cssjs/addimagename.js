@@ -1,21 +1,29 @@
 $(function(){
 	$('img').each(function(){
-		//alt属性をキャプションとして画像の下に付ける
 		var t = $(this);
 		t.after('<p class="caption">▲：'+ t.attr('alt') + '</p>');
-		//src属性からファイル名を取り出し、画像の上に括弧付きで表示
 		var s = t.attr('src');
+		//srcにクエリ文字が入っている？
 		if(s.indexOf('?')>=0){
-			//トリミング用クラス
+			//クエリ文字抜きでファイル名を表示
 			t.before('<p>（'+ s.substring(0, s.lastIndexOf('?')) + '）</p>');
-			if(s.indexOf('?clip=')>=0){
-				imageClipping(t, s.substr(s.indexOf('=')+1));
+			//クエリ分割
+			var q = s.substr(s.indexOf('?')+1).split('&');
+			q.sort();
+			console.log(q);
+			//先に拡大縮小
+			var z = 1;
+			for(var i=q.length-1; i>=0; i--){
+				if(q[i].indexOf('zoom')>=0){
+					z = zoomImage(t, q[i].substr(q[i].indexOf('=')+1));
+				}else if(q[i].indexOf('clip')>=0){
+					imageClipping(t, q[i].substr(q[i].indexOf('=')+1), z);
+				}
 			}
 		} else {
 			t.before('<p>（'+ s.substr(s.lastIndexOf('/')+1) + '）</p>');
 		}
 	});
-	//prettyprint対応のclass指定（HTMLでprettyprintを読み込んで実行してください）
 	$('code').each(function(){
 		var c = $(this).attr('class');
 		var p = $(this).parent('pre');
@@ -25,38 +33,30 @@ $(function(){
 	});
 });
 
-//クリッピング
-function imageClipping(targ, qry){
-	var param = qry.split('+');	//パラメータ分割
-	var repelem = $('<div class="trimbase"></div>');	//置き換えるdiv要素
-	var maxwidth = parseFloat(targ.css('max-width'));	//最大幅
-	var contwidth = targ[0].naturalWidth;	//実画像サイズ(webkitのみ)
-	var zoom = 1;	//パラメータの拡大率
-	var piczoom = 1;	//画像の拡大率（div要素の幅に対する倍率）
+function zoomImage(targ, qry){
+	var contwidth = targ[0].naturalWidth;
+	var contheight = targ[0].naturalHeight;
+	var z = parseFloat(qry) / 100;
+	targ.width(contwidth * z);
+	targ.height(contheight * z);
+	return z;
+}
 
-	//トリミング対象の幅がmax-widthを超える？
-	if(parseFloat(param[2]) > maxwidth){
-		// console.log(contwidth);
-		// console.log(maxwidth);
-		// console.log(param[2]);
-		//max-width÷トリミング幅で各パラメータを調整
-		zoom = maxwidth / param[2];
-		param[0] *= zoom;
-		param[1] *= zoom;
-		param[2] *= zoom;
-		param[3] *= zoom;
-		// console.log(zoom);
-		//画像の倍率を求める
-		piczoom = (contwidth*zoom) / maxwidth;
-	} else {
-		//トリミング対象の幅がmax-width未満
-		piczoom = contwidth / param[2];
-	}
+function imageClipping(targ, qry, zoom){
+	var param = qry.split('+');
+	var repelem = $('<div class="trimbase"></div>');
+	var contwidth = targ[0].naturalWidth * zoom;
+	var contheight = targ[0].naturalHeight * zoom;
+
+	param[0] *= zoom;
+	param[1] *= zoom;
+	param[2] *= zoom;
+	param[3] *= zoom;
 
 	repelem.css({
 		backgroundImage: 'url(' + targ.attr('src') +')',
 		'background-position': -param[0] + 'px ' + -param[1] + 'px',
-		'background-size': piczoom * 100 + '%', 
+		'background-size': contwidth + 'px '+contheight+'px', 
 		width: param[2], height: param[3],
 		'background-repeat': 'no-repeat'
 	});
